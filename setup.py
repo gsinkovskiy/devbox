@@ -5,6 +5,7 @@ setup(
     version='0.1',
     py_modules=['devbox'],
     packages=['devbox'],
+    package_dir={'devbox': 'devbox'},
     include_package_data=True,
     install_requires=[
         'click>=6.7',
