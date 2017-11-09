@@ -1,0 +1,2 @@
+global-exclude *.py[co]
+recursive-include devbox *.html *.css *.js *.py *.po *.mo *.json *.png *.gif *.otf *.eot *.svg *.ttf *.woff
