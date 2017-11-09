@@ -1,17 +1,28 @@
 import click
 import importlib
 
-@click.group()
+
+@click.group(name='main')
 def cli():
     pass
 
-commands = ['up', 'bash', 'ssh', 'hosts.update', 'devbox.update']
+# @click.group(name='main', invoke_without_command=True, no_args_is_help=True)
+# @click.pass_context
+# def cli(ctx):
+#     if ctx.invoked_subcommand is None:
+#         click.echo('I was invoked without subcommand')
+#     else:
+#         click.echo('I am about to invoke %s' % ctx.invoked_subcommand)
+
+
+commands = ['up', 'down', 'bash', 'fix',
+            'ssh', 'hosts.update', 'devbox.update']
 
 for command in commands:
     #module = __import__('commands.'+command, fromlist=['execute'])
     #cli.add_command(getattr(module, 'execute'))
 
-    module = importlib.import_module('.commands.'+command, package='devbox')
+    module = importlib.import_module('.commands.' + command, package='devbox')
     cli.add_command(getattr(module, 'execute'))
 
 if __name__ == '__main__':

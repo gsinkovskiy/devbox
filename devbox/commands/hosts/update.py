@@ -11,6 +11,8 @@ def execute(container = None):
     Update /etc/hosts file depends on current running containers
     """
     #print(container)
+    click.echo('Update hosts')
+
     from devbox.utils import admin, docker as docker_utils
     import docker
     from python_hosts import Hosts, HostsEntry, utils
@@ -32,7 +34,6 @@ def execute(container = None):
         ip = docker_utils.get_ip(container)
 
         if (container_hosts):
-            # https://github.com/jonhadfield/python-hosts/pull/15
             for container_host in container_hosts:
                 hosts_entry = HostsEntry(entry_type='ipv4', address=ip, names=[container_host])
                 hosts.add([hosts_entry], force=True, allow_address_duplication=True)
@@ -51,3 +52,4 @@ def execute(container = None):
             return
 
     hosts.write()
+    click.echo('Done')

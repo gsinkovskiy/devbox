@@ -17,11 +17,14 @@ def commands():
 def execute(ctx, compose_args, service=None):
     """
     Down docker containers depends on docker-compose.yaml file
+
+      - stop the containers
+
+      - updates /etc/hosts depends for container IPs
     """
     import sys
     from subprocess import call
-    # TODO: allow start single container
-    # TODO: handle not daemon mode
+    # TODO: allow stop single container
 
     from devbox.utils.cwd import ensure_docker_compose_dir
     cwd = ensure_docker_compose_dir()
@@ -31,13 +34,8 @@ def execute(ctx, compose_args, service=None):
     ctx.invoke(update_hosts)
     click.echo('Done')
 
+    click.echo('Stopping containers')
     cmdline = ['docker-compose', 'down'] + list(compose_args)
     click.echo('Invoking: %s' % ' '.join(cmdline))
-
     call(cmdline, cwd=cwd)
     click.echo('Done')
-
-# devbox down
-#   up containers
-#   restore hosts
-#   remove network route if not needed anymore

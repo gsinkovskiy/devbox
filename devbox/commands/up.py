@@ -16,34 +16,33 @@ def commands():
 @click.pass_context
 def execute(ctx, compose_args, service=None):
     """
-    Up docker containers depends on docker-compose.yaml file
+    Up Docker containers depends on docker-compose.yaml file.
+
+      - up the containers
+
+      - fix Docker for Windows specific bugs
+
+      - updates /etc/hosts depends for container IPs
     """
-    import sys
+    from sys import platform
     from subprocess import call
     # TODO: allow start single container
     # TODO: handle not daemon mode
-    # TODO: add network route
+    # smart execution
 
     from var_dump import var_dump
     from devbox.utils.cwd import ensure_docker_compose_dir
     cwd = ensure_docker_compose_dir()
 
+    click.echo('Starting docker containers')
     cmdline = ['docker-compose', 'up', '-d'] + list(compose_args)
     click.echo('Invoking: %s' % ' '.join(cmdline))
-
     call(cmdline, cwd=cwd)
     click.echo('Done')
 
-    click.echo('Fix iptables')
-    call('docker run --rm -ti --privileged --network=none --pid=host justincormack/nsenter1 bin/sh -c "iptables -A FORWARD -j ACCEPT"')
-    click.echo('Done')
+    if platform.startswith('win'):
+        from devbox.commands.fix import execute as fix
+        ctx.invoke(fix)
 
-    click.echo('Update hosts')
     from devbox.commands.hosts.update import execute as update_hosts
     ctx.invoke(update_hosts)
-    click.echo('Done')
-
-# devbox up
-#   up containers
-#   update hosts
-#   add network route
