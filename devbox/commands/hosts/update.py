@@ -54,7 +54,8 @@ def execute(container=None):
 
         if platform.startswith('win'):
             if (not admin.is_admin()):
-                click.echo('Unable update hosts file, retry again with admin roots.')
+                click.echo(
+                    'Unable update hosts file, retry again with admin roots.')
                 admin.run_as_admin('devbox', ('hosts:update'))
 
             return

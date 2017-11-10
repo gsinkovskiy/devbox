@@ -28,9 +28,7 @@ def execute(ctx, compose_args, service=None):
     from subprocess import call
     # TODO: allow start single container
     # TODO: handle not daemon mode
-    # smart execution
 
-    from var_dump import var_dump
     from devbox.utils.cwd import ensure_docker_compose_dir
     cwd = ensure_docker_compose_dir()
 
