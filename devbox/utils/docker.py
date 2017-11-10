@@ -49,10 +49,10 @@ def get_default_service():
         except yaml.YAMLError as exc:
             print(exc)
 
-        services = list(doc['services'])
-        if (services):
-            service = services[0]
-            service_config = doc['services'].get(service)
-            return service_config.get('container_name') or service
+        if ('services' in doc):
+            for service in doc['services']:
+                service_config = doc['services'].get(service)
+
+                return service_config.get('container_name') or service
 
     return None
