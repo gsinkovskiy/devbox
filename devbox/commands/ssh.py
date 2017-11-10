@@ -30,5 +30,6 @@ def execute(ctx, service):
     # ssh_exec_pass('112233', ['ssh', 'root@1.2.3.4', 'echo hi!'])
     # ssh(service, '', user, '112233')
 
-    call('ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" {0}@{1}'
-         .format(user, service))
+    cmd = 'ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" {0}@{1}'.format(
+        user, service)
+    call(cmd, shell=True)

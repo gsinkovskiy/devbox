@@ -23,4 +23,4 @@ def execute(ctx, service):
 
     #TODO: user
 
-    call('docker exec -it %s /bin/bash' % service)
+    call('docker exec -it %s /bin/bash' % service, shell=True)
