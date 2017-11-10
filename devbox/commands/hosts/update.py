@@ -64,5 +64,4 @@ def execute(container=None):
         click.echo('Unable update hosts file, retry again with sudo.')
         call('sudo devbox hosts:update', shell=True)
 
-    hosts.write()
     click.echo('Done')
