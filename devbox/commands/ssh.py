@@ -19,8 +19,9 @@ def execute(ctx, service):
     from devbox.utils.cwd import ensure_docker_compose_dir
     from devbox.utils.sshpass import ssh
 
-    cwd = ensure_docker_compose_dir()
-    service = service or get_default_service()
+    if (not service):
+        cwd = ensure_docker_compose_dir()
+        service = get_default_service()
 
     #call('ssh-keygen -R %s' % service)
     # pass password https://gist.github.com/virtuald/54c8657a9ea834fb7fdd
