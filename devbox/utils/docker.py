@@ -35,6 +35,7 @@ def get_hosts(container):
 
 def get_default_service():
     import yaml
+    import yamlordereddictloader
     import os
 
     files = ('docker-compose.yml', 'docker-compose.yaml')
@@ -45,7 +46,7 @@ def get_default_service():
 
     with open(file, 'r') as stream:
         try:
-            doc = yaml.load(stream)
+            doc = yaml.load(stream, Loader=yamlordereddictloader.Loader)
         except yaml.YAMLError as exc:
             print(exc)
 

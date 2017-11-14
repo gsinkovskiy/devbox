@@ -12,6 +12,7 @@ setup(
         'docker>=2.5.1',
         'python-hosts>=0.4.1',
         'PyYAML>=3.12',
+        'yamlordereddictloader',
     ],
     entry_points='''
         [console_scripts]
