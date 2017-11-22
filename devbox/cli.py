@@ -15,8 +15,8 @@ def cli():
 #         click.echo('I am about to invoke %s' % ctx.invoked_subcommand)
 
 
-commands = ['up', 'down', 'bash', 'fix',
-            'ssh', 'hosts.update', 'devbox.update']
+commands = ['bash', 'devbox.update', 'down', 'dotenv.update', 'hosts.update', 'fix',
+            'ssh', 'up']
 
 for command in commands:
     #module = __import__('commands.'+command, fromlist=['execute'])

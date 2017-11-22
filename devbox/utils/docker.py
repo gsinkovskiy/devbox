@@ -1,8 +1,8 @@
 def get_env(container, key: str):
     envs = container.attrs['Config']['Env']
     for env_item in envs:
-        env_var, value = env_item.split('=', 1)
-        if (env_var == key):
+        variable, value = env_item.split('=', 1)
+        if (variable == key):
             return value
 
     return None

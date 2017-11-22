@@ -12,9 +12,7 @@ def ensure_docker_compose_dir():
         if (docker_compose_exists()):
             return os.getcwd()
 
-    # TODO: handle parent paths
-    # if (os.path.i)
-
+    # TODO: handle parent paths?
     os.chdir(cwd)
 
     raise FileNotFoundError(

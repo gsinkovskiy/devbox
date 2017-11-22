@@ -32,10 +32,18 @@ def execute(ctx, compose_args, service=None):
     from devbox.utils.cwd import ensure_docker_compose_dir
     cwd = ensure_docker_compose_dir()
 
+    from devbox.commands.dotenv.update import execute as update_dotenv
+    ctx.invoke(update_dotenv)
+
     click.echo('Starting docker containers')
     cmdline = ['docker-compose', 'up', '-d'] + list(compose_args)
     click.echo('Invoking: %s' % ' '.join(cmdline))
-    call(cmdline, cwd=cwd)
+    retcode = call(cmdline, cwd=cwd)
+    if (retcode > 0):
+        click.echo('En error occured during docker-compose')
+
+        return None
+
     click.echo('Done')
 
     if platform.startswith('win'):
