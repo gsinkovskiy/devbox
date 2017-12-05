@@ -21,6 +21,7 @@ def execute(ctx, service):
         cwd = ensure_docker_compose_dir()
         service = get_default_service()
 
-    #TODO: change user
+    # TODO: change user
 
-    call('docker exec -it %s /bin/bash' % service, shell=True)
+    cmd = 'docker exec -it {0} /bin/bash'.format(service)
+    call(cmd, shell=True)

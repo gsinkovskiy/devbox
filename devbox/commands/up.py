@@ -11,7 +11,7 @@ def commands():
     allow_interspersed_args=False
 ))
 @click.argument('service', required=False)
-#@click.option('compose_args', type=click.UNPROCESSED)
+# @click.option('compose_args', type=click.UNPROCESSED)
 @click.argument('compose_args', nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def execute(ctx, compose_args, service=None):
@@ -39,12 +39,13 @@ def execute(ctx, compose_args, service=None):
     cmdline = ['docker-compose', 'up', '-d'] + list(compose_args)
     click.echo('Invoking: %s' % ' '.join(cmdline))
     retcode = call(cmdline, cwd=cwd)
+
     if (retcode > 0):
-        click.echo('En error occured during docker-compose')
+        click.echo('En error occured during docker-compose. Stop execution.')
 
         return None
 
-    click.echo('Done')
+    click.echo('Done.')
 
     if platform.startswith('win'):
         from devbox.commands.fix import execute as fix

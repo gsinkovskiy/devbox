@@ -15,7 +15,7 @@ def cli():
 #         click.echo('I am about to invoke %s' % ctx.invoked_subcommand)
 
 
-commands = ['bash', 'devbox.update', 'down', 'dotenv.update', 'hosts.update', 'fix',
+commands = ['bash', 'dockerfile.generate', 'devbox.update', 'down', 'dotenv.update', 'hosts.update', 'fix',
             'ssh', 'up']
 
 for command in commands:

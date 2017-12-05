@@ -43,12 +43,16 @@ def get_default_service():
     for file in files:
         if (os.path.isfile(file)):
             break
+    else:
+        return None
 
     with open(file, 'r') as stream:
         try:
             doc = yaml.load(stream, Loader=yamlordereddictloader.Loader)
         except yaml.YAMLError as exc:
             print(exc)
+
+            raise exc
 
         if ('services' in doc):
             for service in doc['services']:

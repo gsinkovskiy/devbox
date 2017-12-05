@@ -13,6 +13,7 @@ setup(
         'python-hosts>=0.4.1',
         'PyYAML>=3.12',
         'yamlordereddictloader',
+        'Jinja2>=2.1',
     ],
     entry_points='''
         [console_scripts]
