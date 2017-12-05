@@ -17,7 +17,8 @@ def execute(ctx):
     from subprocess import call
 
     click.echo('Fix iptables')
-    call('docker run --rm -ti --privileged --network=none --pid=host justincormack/nsenter1 bin/sh -c "iptables -A FORWARD -j ACCEPT"')
+    call(
+        'docker run --rm -ti --privileged --network=none --pid=host justincormack/nsenter1 bin/sh -c "iptables -A FORWARD -j ACCEPT"')
     click.echo('Done')
 
     from devbox.commands.routes.update import execute as update_routes

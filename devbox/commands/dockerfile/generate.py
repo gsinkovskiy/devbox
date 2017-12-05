@@ -69,5 +69,5 @@ def execute(template='Dockerfile.jinja2', settings_file='.devbox.build.yaml'):
                 dockerfile_path = build + '/' + 'Dockerfile'
                 with open(dockerfile_path, 'w') as output_dockerfile:
                     click.echo('Writing compiled Dockerfile "{0}"'.format(dockerfile_path))
-                    output_dockerfile.write(output+'\n')
+                    output_dockerfile.write(output + '\n')
                     output_dockerfile.close()

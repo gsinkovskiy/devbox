@@ -11,7 +11,7 @@ def commands():
     allow_interspersed_args=False
 ))
 @click.argument('service', required=False)
-#@click.option('compose_args', type=click.UNPROCESSED)
+# @click.option('compose_args', type=click.UNPROCESSED)
 @click.argument('compose_args', nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def execute(ctx, compose_args, service=None):
@@ -22,7 +22,6 @@ def execute(ctx, compose_args, service=None):
 
       - updates /etc/hosts depends for container IPs
     """
-    import sys
     from subprocess import call
     # TODO: allow stop single container
 

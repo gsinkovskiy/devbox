@@ -2,7 +2,7 @@ def get_env(container, key: str):
     envs = container.attrs['Config']['Env']
     for env_item in envs:
         variable, value = env_item.split('=', 1)
-        if (variable == key):
+        if variable == key:
             return value
 
     return None
@@ -11,7 +11,7 @@ def get_env(container, key: str):
 def get_ip(container):
     for network_name, network in container.attrs['NetworkSettings']['Networks'].items():
         ip = network['IPAddress']
-        if (ip):
+        if ip:
             return ip
     else:
         print('Container "%s" has not ip' % container.name)
@@ -22,7 +22,7 @@ def get_hosts(container):
     container_hosts = [container.name]
 
     expose_hosts = get_env(container, 'EXPOSE_HOSTS')
-    if (expose_hosts):
+    if expose_hosts:
         container_hosts.extend(
             [host for host in expose_hosts.split("\n") if host])
 
@@ -41,7 +41,7 @@ def get_default_service():
     files = ('docker-compose.yml', 'docker-compose.yaml')
 
     for file in files:
-        if (os.path.isfile(file)):
+        if os.path.isfile(file):
             break
     else:
         return None
@@ -54,7 +54,7 @@ def get_default_service():
 
             raise exc
 
-        if ('services' in doc):
+        if 'services' in doc:
             for service in doc['services']:
                 service_config = doc['services'].get(service)
 

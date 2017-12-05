@@ -1,15 +1,16 @@
 import os
 
+
 def ensure_docker_compose_dir():
     cwd = os.getcwd()
 
-    if (docker_compose_exists()):
+    if docker_compose_exists():
         return os.getcwd()
 
-    if (os.path.isdir('docker')):
+    if os.path.isdir('docker'):
         os.chdir('docker')
 
-        if (docker_compose_exists()):
+        if docker_compose_exists():
             return os.getcwd()
 
     # TODO: handle parent paths?
@@ -23,7 +24,7 @@ def docker_compose_exists():
     files = ('docker-compose.yml', 'docker-compose.yaml')
 
     for file in files:
-        if (os.path.isfile(file)):
+        if os.path.isfile(file):
             return True
 
     return False

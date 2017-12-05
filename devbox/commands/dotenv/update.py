@@ -20,7 +20,7 @@ def execute():
 
     ensure_docker_compose_dir()
 
-    if (not os.path.isfile('.env.dist')):
+    if not os.path.isfile('.env.dist'):
         click.echo('.env.dist does not exists.')
 
         return None
@@ -38,7 +38,7 @@ def execute():
                 displayed_notice = True
 
             new_value = click.prompt(variable + '=', default=value, type=str)
-            target_envvars.update({variable: new_value});
+            target_envvars.update({variable: new_value})
             requires_update = True
 
     displayed_notice = False
@@ -48,7 +48,7 @@ def execute():
                 click.echo('Some variables are missing:')
                 displayed_notice = True
 
-            if (click.confirm('Remove "{0}={1}"?'.format(variable, value))):
+            if click.confirm('Remove "{0}={1}"?'.format(variable, value)):
                 target_envvars.pop(variable)
                 requires_update = True
 

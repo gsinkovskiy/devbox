@@ -17,13 +17,12 @@ def execute(ctx, service):
     import docker
     from devbox.utils.docker import get_default_service, get_env
     from devbox.utils.cwd import ensure_docker_compose_dir
-    from devbox.utils.sshpass import ssh
 
-    if (not service):
+    if not service:
         cwd = ensure_docker_compose_dir()
         service = get_default_service()
 
-    #call('ssh-keygen -R %s' % service)
+    # call('ssh-keygen -R %s' % service)
     # pass password https://gist.github.com/virtuald/54c8657a9ea834fb7fdd
     container = docker.from_env().containers.get(service)
     user = get_env(container, 'CONTAINER_USER') or 'dev'

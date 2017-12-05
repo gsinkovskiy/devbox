@@ -17,7 +17,7 @@ def execute(ctx, service):
     from devbox.utils.docker import get_default_service
     from devbox.utils.cwd import ensure_docker_compose_dir
 
-    if (not service):
+    if not service:
         cwd = ensure_docker_compose_dir()
         service = get_default_service()
 

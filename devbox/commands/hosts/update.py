@@ -17,10 +17,10 @@ def execute(container=None):
 
     from devbox.utils import admin, docker as docker_utils
     import docker
-    from python_hosts import Hosts, HostsEntry, utils
+    from python_hosts import Hosts, HostsEntry
     from python_hosts.exception import UnableToWriteHosts
 
-    #f = open('C:\\apps\\devbox\\a.txt', 'a')
+    # f = open('C:\\apps\\devbox\\a.txt', 'a')
     # f.write('1')
     # f.close()
 
@@ -35,7 +35,7 @@ def execute(container=None):
         container_hosts = docker_utils.get_hosts(container)
         ip = docker_utils.get_ip(container)
 
-        if (container_hosts):
+        if container_hosts:
             for container_host in container_hosts:
                 hosts_entry = HostsEntry(
                     entry_type='ipv4', address=ip, names=[container_host])
@@ -43,7 +43,7 @@ def execute(container=None):
                           allow_address_duplication=True)
             require_update = True
 
-    if (not require_update):
+    if not require_update:
         click.echo('No hosts for update')
         return
 
@@ -53,10 +53,10 @@ def execute(container=None):
         from sys import platform
 
         if platform.startswith('win'):
-            if (not admin.is_admin()):
+            if not admin.is_admin():
                 click.echo(
                     'Unable update hosts file, retry again with admin roots.')
-                admin.run_as_admin('devbox', ('hosts:update'))
+                admin.run_as_admin('devbox', 'hosts:update')
 
             return
 

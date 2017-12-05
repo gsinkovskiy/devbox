@@ -1,10 +1,12 @@
-import click
 import importlib
+
+import click
 
 
 @click.group(name='main')
 def cli():
     pass
+
 
 # @click.group(name='main', invoke_without_command=True, no_args_is_help=True)
 # @click.pass_context
@@ -19,8 +21,8 @@ commands = ['bash', 'dockerfile.generate', 'devbox.update', 'down', 'dotenv.upda
             'ssh', 'up']
 
 for command in commands:
-    #module = __import__('commands.'+command, fromlist=['execute'])
-    #cli.add_command(getattr(module, 'execute'))
+    # module = __import__('commands.'+command, fromlist=['execute'])
+    # cli.add_command(getattr(module, 'execute'))
 
     module = importlib.import_module('.commands.' + command, package='devbox')
     cli.add_command(getattr(module, 'execute'))

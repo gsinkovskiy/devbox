@@ -1,10 +1,10 @@
-from collections import OrderedDict
 import os
+from collections import OrderedDict
 
 
 def parse_dotenv(path):
     envvars = OrderedDict()
-    if (os.path.isfile(path)):
+    if os.path.isfile(path):
         for line in open(path).readlines():
             variable, value = line.split('=', 1)
             envvars.update({variable: value.rstrip()})
