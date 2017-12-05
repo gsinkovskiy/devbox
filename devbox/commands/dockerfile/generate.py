@@ -11,24 +11,24 @@ def execute(template='Dockerfile.jinja2', settings_file='.devbox.build.yaml'):
     """
     Generates Dockerfile's from given template
     """
-    # print(container)
     click.echo('Generate Dockerfile\'s')
 
     import os
 
     if not os.path.isfile(template):
-        click.echo('No template "{0}" exists in current folder'.format(template))
+        click.echo('Template "{0}" not found in current folder. Cannot build.'.format(template))
 
-        return None
+        raise None
 
     if not os.path.isfile(settings_file):
-        click.echo('No settings file "{0}" exists in current folder'.format(settings_file))
+        click.echo('Settings file "{0}" found in current folder. Cannot build.'.format(settings_file))
 
         return None
 
-    from jinja2 import Template
-    content = open(template).read()
-    jinja_template = Template(content)
+    from jinja2 import Environment, FileSystemLoader
+    env = Environment(loader=FileSystemLoader(os.getcwd()), trim_blocks=True, lstrip_blocks=True,
+                      keep_trailing_newline=True)
+    jinja_template = env.get_template(template)
 
     import yaml
 
@@ -40,34 +40,39 @@ def execute(template='Dockerfile.jinja2', settings_file='.devbox.build.yaml'):
 
             raise exc
 
-        context = dict()
-        if 'context' in settings:
-            context = settings['context']
+        vars = dict()
+        if 'vars' in settings:
+            vars = settings['vars']
 
-        if 'builds' in settings:
-            for build in settings['builds']:
-                context['BUILD'] = build
+        if not 'builds' in settings:
+            click.echo('Settings file "{0}" does not contains "builds" section.'.format(settings_file))
 
-                if not os.path.isfile(build + '/' + settings_file):
-                    click.echo('No settings file "{0}" exists for build {1}'.format(settings_file, build))
-                else:
-                    with open(build + '/' + settings_file, 'r') as stream:
-                        try:
-                            build_settings = yaml.load(stream)
-                        except yaml.YAMLError as exc:
-                            print(exc)
+            return None
 
-                            raise exc
+        for build in settings['builds']:
+            vars['BUILD'] = build
 
-                        if 'context' in build_settings:
-                            context = {**context, **build_settings['context']}
+            if not os.path.isfile(build + '/' + settings_file):
+                click.echo('No settings file "{0}" found for build "{1}".'.format(settings_file, build))
+            else:
+                with open(build + '/' + settings_file, 'r') as stream:
+                    try:
+                        build_settings = yaml.load(stream)
+                    except yaml.YAMLError as exc:
+                        print(exc)
 
-                output = jinja_template.render(context)
+                        raise exc
 
-                # print(output)
+                    if 'vars' in build_settings:
+                        vars = {**vars, **build_settings['vars']}
 
-                dockerfile_path = build + '/' + 'Dockerfile'
-                with open(dockerfile_path, 'w') as output_dockerfile:
-                    click.echo('Writing compiled Dockerfile "{0}"'.format(dockerfile_path))
-                    output_dockerfile.write(output + '\n')
-                    output_dockerfile.close()
+            output = jinja_template.render(vars)
+
+            dockerfile_path = build + '/' + 'Dockerfile'
+            if 'dockerfile' in build_settings:
+                dockerfile_path = build_settings['dockerfile']
+
+            with open(dockerfile_path, 'w') as output_dockerfile:
+                click.echo('Writing compiled Dockerfile "{0}".'.format(dockerfile_path))
+                output_dockerfile.write(output)
+                output_dockerfile.close()

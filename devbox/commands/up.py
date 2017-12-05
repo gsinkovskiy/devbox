@@ -41,7 +41,7 @@ def execute(ctx, compose_args, service=None):
     retcode = call(cmdline, cwd=cwd)
 
     if retcode > 0:
-        click.echo('En error occured during docker-compose. Stop execution.')
+        click.echo('En error occurred during docker-compose. Stop execution.')
 
         return None
 
