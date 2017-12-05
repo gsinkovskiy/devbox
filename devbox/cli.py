@@ -18,7 +18,7 @@ def cli():
 
 
 commands = ['bash', 'dockerfile.generate', 'devbox.update', 'down', 'dotenv.update', 'hosts.update', 'fix',
-            'ssh', 'up']
+            'ssh', 'volume.reset', 'up']
 
 for command in commands:
     # module = __import__('commands.'+command, fromlist=['execute'])
