@@ -14,10 +14,10 @@ def execute():
 
     click.echo('Updating .env file based on .env.dist template')
 
-    from devbox.utils.dotenv import parse_dotenv, dump_dotenv
+    from ...utils.dotenv import parse_dotenv, dump_dotenv
     import os
 
-    from devbox.utils.cwd import CwdHelper
+    from ...utils.cwd import CwdHelper
     cwd = CwdHelper().get_compose_dir()
 
     if not os.path.isfile(cwd + '/.env.dist'):

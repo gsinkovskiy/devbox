@@ -14,8 +14,8 @@ def execute(ctx, service):
     Connect by ssh to the given service
     """
     from subprocess import call
-    from devbox.utils.docker import DockerHelper, get_default_service, get_env
-    from devbox.utils.cwd import CwdHelper
+    from ..utils.docker import DockerHelper, get_default_service, get_env
+    from ..utils.cwd import CwdHelper
 
     if not service:
         service = get_default_service(CwdHelper().get_compose_path())

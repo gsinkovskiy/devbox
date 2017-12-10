@@ -28,11 +28,11 @@ def execute(ctx, compose_args, service=None):
     # TODO: allow start single container
     # TODO: handle not daemon mode
 
-    from devbox.utils.cwd import CwdHelper
-    from devbox.utils import WIN
+    from ..utils.cwd import CwdHelper
+    from ..utils import WIN
     cwd = CwdHelper().get_compose_dir()
 
-    from devbox.commands.dotenv.update import execute as update_dotenv
+    from .dotenv.update import execute as update_dotenv
     ctx.invoke(update_dotenv)
 
     click.echo('Starting docker containers')
@@ -48,8 +48,8 @@ def execute(ctx, compose_args, service=None):
     click.echo('Done.')
 
     if WIN:
-        from devbox.commands.fix import execute as fix
+        from .fix import execute as fix
         ctx.invoke(fix)
 
-    from devbox.commands.hosts.update import execute as update_hosts
+    from .hosts.update import execute as update_hosts
     ctx.invoke(update_hosts)

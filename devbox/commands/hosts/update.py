@@ -15,11 +15,11 @@ def execute(containers=None):
     # print(container)
     click.echo('Update hosts')
 
-    from devbox.utils import admin
-    from devbox.utils.docker import DockerHelper, get_hosts, get_ip
+    from ...utils import admin
+    from ...utils.docker import DockerHelper, get_hosts, get_ip
+    from ...utils import WIN
     from python_hosts import Hosts, HostsEntry
     from python_hosts.exception import UnableToWriteHosts
-    from devbox.utils import WIN
 
     # f = open('C:\\apps\\devbox\\a.txt', 'a')
     # f.write('1')

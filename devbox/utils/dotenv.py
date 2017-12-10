@@ -2,7 +2,7 @@ import os
 from collections import OrderedDict
 
 
-def parse_dotenv(path):
+def parse_dotenv(path: str) -> OrderedDict:
     envvars = OrderedDict()
     if os.path.isfile(path):
         for line in open(path).readlines():
@@ -13,7 +13,7 @@ def parse_dotenv(path):
     return envvars
 
 
-def dump_dotenv(envvars: OrderedDict, path):
+def dump_dotenv(envvars: OrderedDict, path: str):
     with open(path, 'w') as file:
         for variable, value in envvars.items():
             file.write('{0}={1}\n'.format(variable, value))

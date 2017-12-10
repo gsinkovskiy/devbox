@@ -25,11 +25,11 @@ def execute(ctx, compose_args, service=None):
     from subprocess import call
     # TODO: allow stop single container
 
-    from devbox.utils.cwd import CwdHelper
+    from ..utils.cwd import CwdHelper
     cwd = CwdHelper().get_compose_dir()
 
     click.echo('Restore hosts')
-    from devbox.commands.hosts.update import execute as update_hosts
+    from .hosts.update import execute as update_hosts
     ctx.invoke(update_hosts)
     click.echo('Done')
 

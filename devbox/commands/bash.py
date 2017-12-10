@@ -14,8 +14,8 @@ def execute(ctx, service):
     Open bash on the given service
     """
     from subprocess import call
-    from devbox.utils.docker import get_default_service
-    from devbox.utils.cwd import CwdHelper
+    from ..utils.docker import get_default_service
+    from ..utils.cwd import CwdHelper
 
     if not service:
         service = get_default_service(CwdHelper().get_compose_path())

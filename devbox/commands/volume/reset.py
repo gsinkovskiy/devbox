@@ -15,7 +15,7 @@ def execute(ctx, volume):
     """
     click.echo('Reset volume')
 
-    from devbox.utils.docker import DockerHelper
+    from ...utils.docker import DockerHelper
 
     docker_helper = DockerHelper()
 
@@ -37,5 +37,5 @@ def execute(ctx, volume):
     docker_helper.get_volume(volume_name).remove(force=True)
 
     click.echo('Restart devbox')
-    from devbox.commands.up import execute as up
+    from ..up import execute as up
     ctx.invoke(up)
