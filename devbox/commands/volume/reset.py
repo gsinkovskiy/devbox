@@ -11,44 +11,30 @@ def commands():
 @click.pass_context
 def execute(ctx, volume):
     """
-    Resets given volume
+    Resets given volume (remove and recreate)
     """
     click.echo('Reset volume')
 
-    # sphinxsearch - data - volume
+    from devbox.utils.docker import DockerHelper
 
-    import docker
+    docker_helper = DockerHelper()
 
-    volume_name = None
-    client = docker.from_env()
-    for docker_volume in client.volumes.list():
-        if not docker_volume.attrs['Labels']:
-            continue
-
-        if docker_volume.attrs['Labels']['com.docker.compose.volume'] == volume:
-            volume_name = docker_volume.attrs['Name']
-
+    volume_name = docker_helper.get_full_volume_name(volume)
     if not volume_name:
         click.echo('Could not find volume "{0}".'.format(volume))
 
         return None
 
-    used_containers = list()
-    for container in client.containers.list(all=True):
-        for mount in container.attrs['Mounts']:
-            if not 'Name' in mount:
-                continue
-
-            if mount['Name'] == volume_name:
-                used_containers.append(container)
+    used_containers = docker_helper.get_used_containers_for_volume(volume_name)
 
     for used_container in used_containers:
-        click.echo('Stop container')
+        click.echo('Stop container "{0}"'.format(used_container.name))
         used_container.stop()
+        click.echo('Remove container "{0}"'.format(used_container.name))
         used_container.remove()
 
-    click.echo('Remove volume')
-    client.volumes.get(volume_name).remove(force=True)
+    click.echo('Remove volume "{0}"'.format(volume_name))
+    docker_helper.get_client().volumes.get(volume_name).remove(force=True)
 
     click.echo('Restart devbox')
     from devbox.commands.up import execute as up

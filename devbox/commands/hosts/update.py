@@ -7,16 +7,16 @@ def commands():
 
 
 @commands.command(name='hosts:update')
-@click.argument('container', nargs=-1)
-def execute(container=None):
+@click.argument('containers', nargs=-1)
+def execute(containers=None):
     """
-    Update /etc/hosts file depends on current running containers
+    Update "/etc/hosts" file depends on current running containers.
     """
     # print(container)
     click.echo('Update hosts')
 
-    from devbox.utils import admin, docker as docker_utils
-    import docker
+    from devbox.utils import admin
+    from devbox.utils.docker import DockerHelper, get_hosts, get_ip
     from python_hosts import Hosts, HostsEntry
     from python_hosts.exception import UnableToWriteHosts
 
@@ -24,23 +24,27 @@ def execute(container=None):
     # f.write('1')
     # f.close()
 
-    client = docker.from_env()
-    # TODO: support containers
-    containers = client.containers.list()
+    docker_helper = DockerHelper()
+    runned_containers = docker_helper.get_client().containers.list()
+    if (not containers):
+        containers = [container.name for container in runned_containers]
+
     hosts = Hosts()
     require_update = False
 
-    for container in containers:
-        # print(container.name)
-        container_hosts = docker_utils.get_hosts(container)
-        ip = docker_utils.get_ip(container)
+    for container in runned_containers:
+        if not container in containers:
+            continue
+
+        container_hosts = get_hosts(container)
+        ip = get_ip(container)
+        if not ip:
+            click.echo('Container "{0}" has not ip'.format(container.name))
 
         if container_hosts:
             for container_host in container_hosts:
-                hosts_entry = HostsEntry(
-                    entry_type='ipv4', address=ip, names=[container_host])
-                hosts.add([hosts_entry], force=True,
-                          allow_address_duplication=True)
+                hosts_entry = HostsEntry(entry_type='ipv4', address=ip, names=[container_host])
+                hosts.add([hosts_entry], force=True, allow_address_duplication=True)
             require_update = True
 
     if not require_update:
@@ -52,6 +56,7 @@ def execute(container=None):
     except UnableToWriteHosts:
         from sys import platform
 
+        # TODO: pass containers
         if platform.startswith('win'):
             if not admin.is_admin():
                 click.echo(

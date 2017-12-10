@@ -14,8 +14,7 @@ def execute(ctx, service):
     Connect by ssh to the given service
     """
     from subprocess import call
-    import docker
-    from devbox.utils.docker import get_default_service, get_env
+    from devbox.utils.docker import DockerHelper, get_default_service, get_env
     from devbox.utils.cwd import ensure_docker_compose_dir
 
     if not service:
@@ -24,7 +23,8 @@ def execute(ctx, service):
 
     # call('ssh-keygen -R %s' % service)
     # pass password https://gist.github.com/virtuald/54c8657a9ea834fb7fdd
-    container = docker.from_env().containers.get(service)
+    docker_helper = DockerHelper()
+    container = docker_helper.get_client().containers.get(service)
     user = get_env(container, 'CONTAINER_USER') or 'dev'
 
     # ssh_exec_pass('112233', ['ssh', 'root@1.2.3.4', 'echo hi!'])

@@ -7,8 +7,8 @@ def commands():
 
 
 @commands.command(name='routes:update')
-@click.argument('container', nargs=-1)
-def execute(container=None):
+@click.argument('containers', nargs=-1)
+def execute(containers=None):
     """
     Update network routes
     """
