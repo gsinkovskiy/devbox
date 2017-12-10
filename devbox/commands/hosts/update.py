@@ -25,7 +25,7 @@ def execute(containers=None):
     # f.close()
 
     docker_helper = DockerHelper()
-    runned_containers = docker_helper.get_client().containers.list()
+    runned_containers = docker_helper.get_containers()
     if (not containers):
         containers = [container.name for container in runned_containers]
 

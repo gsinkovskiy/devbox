@@ -1,6 +1,8 @@
 from typing import Optional, List
 
+from docker import DockerClient
 from docker.models.containers import Container
+from docker.models.volumes import Volume
 
 
 class DockerHelper:
@@ -10,7 +12,7 @@ class DockerHelper:
         self.client = docker.from_env()
         pass
 
-    def get_client(self):
+    def get_client(self) -> DockerClient:
         return self.client
 
     def get_full_volume_name(self, name: str) -> Optional[str]:
@@ -23,6 +25,9 @@ class DockerHelper:
 
         return None
 
+    def get_volume(self, full_volume_name: str) -> Volume:
+        return self.client.volumes.get(full_volume_name)
+
     def get_used_containers_for_volume(self, volume_name: str) -> List[Container]:
         used_containers = list()
         for container in self.client.containers.list(all=True):
@@ -34,6 +39,12 @@ class DockerHelper:
                     used_containers.append(container)
 
         return used_containers
+
+    def get_container(self, container_id: str) -> Container:
+        return self.client.containers.get(container_id)
+
+    def get_containers(self) -> List[Container]:
+        return self.client.containers.list()
 
 
 def get_env(container, key: str) -> Optional[str]:

@@ -34,7 +34,7 @@ def execute(ctx, volume):
         used_container.remove()
 
     click.echo('Remove volume "{0}"'.format(volume_name))
-    docker_helper.get_client().volumes.get(volume_name).remove(force=True)
+    docker_helper.get_volume(volume_name).remove(force=True)
 
     click.echo('Restart devbox')
     from devbox.commands.up import execute as up

@@ -24,12 +24,11 @@ def execute(ctx, service):
     # call('ssh-keygen -R %s' % service)
     # pass password https://gist.github.com/virtuald/54c8657a9ea834fb7fdd
     docker_helper = DockerHelper()
-    container = docker_helper.get_client().containers.get(service)
+    container = docker_helper.get_container(service)
     user = get_env(container, 'CONTAINER_USER') or 'dev'
 
     # ssh_exec_pass('112233', ['ssh', 'root@1.2.3.4', 'echo hi!'])
     # ssh(service, '', user, '112233')
 
-    cmd = 'ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" {0}@{1}'.format(
-        user, service)
+    cmd = 'ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" {0}@{1}'.format(user, service)
     call(cmd, shell=True)
