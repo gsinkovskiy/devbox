@@ -80,20 +80,11 @@ def get_hosts(container: Container) -> List[str]:
     return container_hosts
 
 
-def get_default_service() -> Optional[str]:
+def get_default_service(compose_path: str) -> Optional[str]:
     import yaml
     import yamlordereddictloader
-    import os
 
-    files = ('docker-compose.yml', 'docker-compose.yaml')
-
-    for file in files:
-        if os.path.isfile(file):
-            break
-    else:
-        return None
-
-    with open(file, 'r') as stream:
+    with open(compose_path, 'r') as stream:
         try:
             doc = yaml.load(stream, Loader=yamlordereddictloader.Loader)
         except yaml.YAMLError as exc:

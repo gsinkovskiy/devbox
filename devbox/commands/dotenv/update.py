@@ -15,19 +15,19 @@ def execute():
     click.echo('Updating .env file based on .env.dist template')
 
     from devbox.utils.dotenv import parse_dotenv, dump_dotenv
-    from devbox.utils.cwd import ensure_docker_compose_dir
     import os
 
-    ensure_docker_compose_dir()
+    from devbox.utils.cwd import CwdHelper
+    cwd = CwdHelper().get_compose_dir()
 
-    if not os.path.isfile('.env.dist'):
+    if not os.path.isfile(cwd + '/.env.dist'):
         click.echo('.env.dist does not exists.')
 
         return None
 
     requires_update = False
-    current_envvars = parse_dotenv('.env')
-    master_envvars = parse_dotenv('.env.dist')
+    current_envvars = parse_dotenv(cwd + '/.env')
+    master_envvars = parse_dotenv(cwd + '/.env.dist')
     target_envvars = current_envvars.copy()
 
     displayed_notice = False

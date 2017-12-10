@@ -24,13 +24,13 @@ def execute(ctx, compose_args, service=None):
 
       - updates /etc/hosts depends for container IPs
     """
-    from sys import platform
     from subprocess import call
     # TODO: allow start single container
     # TODO: handle not daemon mode
 
-    from devbox.utils.cwd import ensure_docker_compose_dir
-    cwd = ensure_docker_compose_dir()
+    from devbox.utils.cwd import CwdHelper
+    from devbox.utils import WIN
+    cwd = CwdHelper().get_compose_dir()
 
     from devbox.commands.dotenv.update import execute as update_dotenv
     ctx.invoke(update_dotenv)
@@ -47,7 +47,7 @@ def execute(ctx, compose_args, service=None):
 
     click.echo('Done.')
 
-    if platform.startswith('win'):
+    if WIN:
         from devbox.commands.fix import execute as fix
         ctx.invoke(fix)
 
