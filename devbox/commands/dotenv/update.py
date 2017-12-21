@@ -56,4 +56,4 @@ def execute():
         click.echo('No any updates required.')
     else:
         click.echo('Writing new .env.')
-        dump_dotenv(target_envvars, '.env')
+        dump_dotenv(target_envvars, cwd + '/.env')
