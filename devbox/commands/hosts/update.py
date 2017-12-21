@@ -15,7 +15,7 @@ def execute(containers=None):
     # print(container)
     click.echo('Update hosts')
 
-    from ...utils import admin
+    from ...utils.admin import is_admin, run_as_admin
     from ...utils.docker import DockerHelper, get_hosts, get_ip
     from ...utils import WIN
     from python_hosts import Hosts, HostsEntry
@@ -57,10 +57,9 @@ def execute(containers=None):
     except UnableToWriteHosts:
         # TODO: pass containers
         if WIN:
-            if not admin.is_admin():
-                click.echo(
-                    'Unable update hosts file, retry again with admin roots.')
-                admin.run_as_admin('devbox', 'hosts:update')
+            if not is_admin():
+                click.echo('Unable update hosts file, retry again with admin roots.')
+                run_as_admin('devbox', 'hosts:update')
 
             return
 

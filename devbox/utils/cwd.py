@@ -4,7 +4,9 @@ from typing import Optional
 
 
 class CwdHelper:
-    def __init__(self, cwd=os.getcwd()):
+    __slots__ = ('__compose_dir', '__compose_file')
+
+    def __init__(self, cwd: str = os.getcwd()):
         self.__compose_dir = self.__get_compose_dir(cwd)
         self.__compose_file = self.__get_compose_file(self.__compose_dir)
 
@@ -31,7 +33,7 @@ class CwdHelper:
             'Can\'t find a suitable configuration file in this directory or any parent. Are you in the right directory?')
 
     def __get_compose_file(self, path: str) -> Optional[str]:
-        compose_files = ('docker-compose.yml', 'docker-compose.yaml')
+        compose_files = ('docker-compose.yaml', 'docker-compose.yml')
 
         for compose_file in compose_files:
             if os.path.isfile(path + '/' + compose_file):
