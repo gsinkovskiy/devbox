@@ -9,25 +9,24 @@ def commands():
 @commands.command(name='dotenv:update')
 def execute():
     """
-    Update .env file based on .env.dist template
+    Update ".env" file based on ".env.dist" template
     """
-
-    click.echo('Updating .env file based on .env.dist template')
-
-    from ...utils.dotenv import parse_dotenv, dump_dotenv
-    import os
+    click.echo('Updating ".env" file based on ".env.dist" template')
 
     from ...utils.cwd import CwdHelper
-    cwd = CwdHelper().get_compose_dir()
+    from ...utils.dotenv import DotenvHelper
 
-    if not os.path.isfile(cwd + '/.env.dist'):
-        click.echo('.env.dist does not exists.')
+    cwd = CwdHelper().get_compose_dir()
+    dotenvHelper = DotenvHelper(cwd)
+
+    if not dotenvHelper.exists(dotenvHelper.DOTENV_DIST_FILE):
+        click.echo('"{dist_file}" does not exists.'.format(dist_file=dotenvHelper.DOTENV_DIST_FILE))
 
         return None
 
     requires_update = False
-    current_envvars = parse_dotenv(cwd + '/.env')
-    master_envvars = parse_dotenv(cwd + '/.env.dist')
+    current_envvars = dotenvHelper.parse(dotenvHelper.DOTENV_FILE)
+    master_envvars = dotenvHelper.parse(dotenvHelper.DOTENV_DIST_FILE)
     target_envvars = current_envvars.copy()
 
     displayed_notice = False
@@ -48,12 +47,12 @@ def execute():
                 click.echo('Some variables are missing:')
                 displayed_notice = True
 
-            if click.confirm('Remove "{0}={1}"?'.format(variable, value)):
+            if click.confirm('Remove "{variable}={value}"?'.format(variable=variable, value=value)):
                 target_envvars.pop(variable)
                 requires_update = True
 
     if not requires_update:
         click.echo('No any updates required.')
     else:
-        click.echo('Writing new .env.')
-        dump_dotenv(target_envvars, cwd + '/.env')
+        click.echo('Writing new ".env" file.')
+        dotenvHelper.dump(dotenvHelper.DOTENV_FILE, target_envvars)
