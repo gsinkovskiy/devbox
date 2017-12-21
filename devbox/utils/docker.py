@@ -48,18 +48,19 @@ class DockerHelper:
     def get_containers(self, all=False, before=None, filters=None, limit=-1, since=None) -> List[Container]:
         return self.client.containers.list(all, before, filters, limit, since)
 
-    def get_compose_project_name(self) -> Optional[str]:
-        from ..utils.cwd import CwdHelper
-        from ..utils.dotenv import DotenvHelper
 
-        try:
-            cwd = CwdHelper().get_compose_dir()
-        except FileNotFoundError:
-            return None
+def get_compose_project_name() -> Optional[str]:
+    from ..utils.cwd import CwdHelper
+    from ..utils.dotenv import DotenvHelper
 
-        compose_project = DotenvHelper(cwd).get_env('COMPOSE_PROJECT_NAME')
+    try:
+        cwd = CwdHelper().get_compose_dir()
+    except FileNotFoundError:
+        return None
 
-        return compose_project.replace('-', '')
+    compose_project = DotenvHelper(cwd).get_env('COMPOSE_PROJECT_NAME')
+
+    return compose_project.replace('-', '')
 
 
 def get_env(container: Container, key: str) -> Optional[str]:

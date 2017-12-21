@@ -14,7 +14,7 @@ def execute(ctx, volume):
     Resets given volume (remove and recreate)
     """
     click.echo('Reset volume')
-    from ...utils.docker import DockerHelper
+    from ...utils.docker import DockerHelper, get_compose_project_name
     from docker.errors import NotFound
 
     docker_helper = DockerHelper()
@@ -23,7 +23,7 @@ def execute(ctx, volume):
     try:
         docker_helper.get_volume(volume_name)
     except NotFound:
-        compose_project = docker_helper.get_compose_project_name()
+        compose_project = get_compose_project_name()
         volume_name = docker_helper.get_full_volume_name(volume, compose_project)
 
     if not volume_name:
