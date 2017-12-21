@@ -40,9 +40,9 @@ def execute(template='Dockerfile.jinja2', settings_file='.devbox.build.yaml'):
 
             raise exc
 
-        vars = dict()
-        if 'vars' in settings:
-            vars = settings['vars']
+        variables = dict()
+        if 'variables' in settings:
+            variables = settings['variables']
 
         if not 'builds' in settings:
             click.echo('Settings file "{0}" does not contains "builds" section.'.format(settings_file))
@@ -50,7 +50,7 @@ def execute(template='Dockerfile.jinja2', settings_file='.devbox.build.yaml'):
             return None
 
         for build in settings['builds']:
-            vars['BUILD'] = build
+            variables['BUILD'] = build
 
             if not os.path.isfile(build + '/' + settings_file):
                 click.echo('No settings file "{0}" found for build "{1}".'.format(settings_file, build))
@@ -63,10 +63,10 @@ def execute(template='Dockerfile.jinja2', settings_file='.devbox.build.yaml'):
 
                         raise exc
 
-                    if 'vars' in build_settings:
-                        vars = {**vars, **build_settings['vars']}
+                    if 'variables' in build_settings:
+                        variables = {**variables, **build_settings['variables']}
 
-            output = jinja_template.render(vars)
+            output = jinja_template.render(variables)
 
             dockerfile_path = build + '/' + 'Dockerfile'
             if 'dockerfile' in build_settings:
