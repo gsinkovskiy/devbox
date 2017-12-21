@@ -15,12 +15,14 @@ class DockerHelper:
     def get_client(self) -> DockerClient:
         return self.client
 
-    def get_full_volume_name(self, name: str) -> Optional[str]:
+    def get_full_volume_name(self, volume_name: str, compose_project: str) -> Optional[str]:
         for volume in self.client.volumes.list():
             if not volume.attrs['Labels']:
                 continue
 
-            if volume.attrs['Labels']['com.docker.compose.volume'] == name:
+            labels = volume.attrs['Labels']
+            if labels['com.docker.compose.volume'] == volume_name \
+                    and labels['com.docker.compose.project'] == compose_project:
                 return volume.attrs['Name']
 
         return None
@@ -30,7 +32,7 @@ class DockerHelper:
 
     def get_used_containers_for_volume(self, volume_name: str) -> List[Container]:
         used_containers = list()
-        for container in self.client.containers.list(all=True):
+        for container in self.get_containers(all=True):
             for mount in container.attrs['Mounts']:
                 if not 'Name' in mount:
                     continue
@@ -43,18 +45,35 @@ class DockerHelper:
     def get_container(self, container_id: str) -> Container:
         return self.client.containers.get(container_id)
 
-    def get_containers(self) -> List[Container]:
-        return self.client.containers.list()
+    def get_containers(self, all=False, before=None, filters=None, limit=-1, since=None) -> List[Container]:
+        return self.client.containers.list(all, before, filters, limit, since)
+
+    def get_compose_project_name(self) -> Optional[str]:
+        from ..utils.cwd import CwdHelper
+        from ..utils.dotenv import DotenvHelper
+
+        try:
+            cwd = CwdHelper().get_compose_dir()
+        except FileNotFoundError:
+            return None
+
+        compose_project = DotenvHelper(cwd).get_env('COMPOSE_PROJECT_NAME')
+
+        return compose_project.replace('-', '')
 
 
-def get_env(container, key: str) -> Optional[str]:
-    envs = container.attrs['Config']['Env']
-    for env_item in envs:
-        variable, value = env_item.split('=', 1)
+def get_env(container: Container, key: str) -> Optional[str]:
+    envvars = container.attrs['Config']['Env']
+    for line in envvars:
+        variable, value = line.split('=', 1)
         if variable == key:
             return value
 
     return None
+
+
+def get_workdir(container: Container) -> str:
+    return container.attrs['Config']['WorkingDir']
 
 
 def get_ip(container: Container) -> Optional[str]:
@@ -62,6 +81,7 @@ def get_ip(container: Container) -> Optional[str]:
         ip = network['IPAddress']
         if ip:
             return ip
+
     return None
 
 
@@ -70,8 +90,7 @@ def get_hosts(container: Container) -> List[str]:
 
     expose_hosts = get_env(container, 'EXPOSE_HOSTS')
     if expose_hosts:
-        container_hosts.extend(
-            [host for host in expose_hosts.split("\n") if host])
+        container_hosts.extend([host for host in expose_hosts.split("\n") if host])
 
     from python_hosts import utils
 
@@ -86,15 +105,15 @@ def get_default_service(compose_path: str) -> Optional[str]:
 
     with open(compose_path, 'r') as stream:
         try:
-            doc = yaml.load(stream, Loader=yamlordereddictloader.Loader)
+            compose_config = yaml.load(stream, Loader=yamlordereddictloader.Loader)
         except yaml.YAMLError as exc:
             print(exc)
 
             raise exc
 
-        if 'services' in doc:
-            for service in doc['services']:
-                service_config = doc['services'].get(service)
+        if 'services' in compose_config:
+            for service in compose_config['services']:
+                service_config = compose_config['services'].get(service)
 
                 return service_config.get('container_name') or service
 

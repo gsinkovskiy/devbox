@@ -14,12 +14,18 @@ def execute(ctx, volume):
     Resets given volume (remove and recreate)
     """
     click.echo('Reset volume')
-
     from ...utils.docker import DockerHelper
+    from docker.errors import NotFound
 
     docker_helper = DockerHelper()
 
-    volume_name = docker_helper.get_full_volume_name(volume)
+    volume_name = volume
+    try:
+        docker_helper.get_volume(volume_name)
+    except NotFound:
+        compose_project = docker_helper.get_compose_project_name()
+        volume_name = docker_helper.get_full_volume_name(volume, compose_project)
+
     if not volume_name:
         click.echo('Could not find volume "{0}".'.format(volume))
 
@@ -37,5 +43,6 @@ def execute(ctx, volume):
     docker_helper.get_volume(volume_name).remove(force=True)
 
     click.echo('Restart devbox')
+    # TODO: restart projects
     from ..up import execute as up
     ctx.invoke(up)
