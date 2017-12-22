@@ -33,6 +33,10 @@ def execute(ctx, volume):
 
     used_containers = docker_helper.get_used_containers_for_volume(volume_name)
 
+    if not click.confirm('Are you sure want remove volume {0}?'.format(volume_name)):
+        click.echo('User aborted.')
+        return None
+
     for used_container in used_containers:
         click.echo('Stop container "{0}"'.format(used_container.name))
         used_container.stop()
