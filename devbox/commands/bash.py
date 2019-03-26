@@ -22,5 +22,5 @@ def execute(ctx, service):
 
     # TODO: change user
 
-    cmd = 'docker exec -it {0} /bin/bash'.format(service)
+    cmd = 'docker exec -it {0} /bin/bash -c "sudo -iu dev"'.format(service)
     call(cmd, shell=True)
